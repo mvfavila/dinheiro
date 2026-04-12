@@ -16,6 +16,7 @@ Values are represented as `int64` centavos internally. Both functions accept equ
 |------------------|-----------------------|--------------------|
 | `2`              | `"2"`                 | `"0,02"`           |
 | `199`            | `"199"`               | `"1,99"`           |
+| `100150`         | `"100150"`            | `"1001,50"`       |
 | `100137`         | `"100137"`            | `"1.001,37"`       |
 
 Negative values and unsupported types return an error.
@@ -31,7 +32,10 @@ dinheiro.ToText(int64(2))          // "0,02"
 dinheiro.ToText("30")              // "0,30"
 dinheiro.ToText("1,99")            // "1,99"
 dinheiro.ToText(int64(100137))     // "1.001,37"
+dinheiro.ToText("7700022280")      // "77.000.222,80"
+dinheiro.ToText("77000222,80")     // "77.000.222,80"
 dinheiro.ToText("77.000.222,80")   // "77.000.222,80"
+dinheiro.ToText("77.000.222")      // error
 ```
 
 ### `ToTextDescription(value any) (string, error)`
@@ -43,7 +47,10 @@ dinheiro.ToTextDescription(int64(2))         // "dois centavos"
 dinheiro.ToTextDescription("30")             // "trinta centavos"
 dinheiro.ToTextDescription("1,99")           // "um real e noventa e nove centavos"
 dinheiro.ToTextDescription(int64(100137))    // "um mil e um reais e trinta e sete centavos"
+dinheiro.ToTextDescription("7700022280")     // "setenta e sete milhões duzentos e vinte e dois reais e oitenta centavos"
+dinheiro.ToTextDescription("77000222,80")    // "setenta e sete milhões duzentos e vinte e dois reais e oitenta centavos"
 dinheiro.ToTextDescription("77.000.222,80")  // "setenta e sete milhões duzentos e vinte e dois reais e oitenta centavos"
+dinheiro.ToTextDescription("77.000.222")     // error
 ```
 
 ## Supported range

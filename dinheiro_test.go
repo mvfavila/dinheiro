@@ -73,6 +73,7 @@ func TestToText_StringFormatted(t *testing.T) {
 		{"0,00", "0,00"},
 		{"0,02", "0,02"},
 		{"0,30", "0,30"},
+		{"1001,50", "1.001,50"},
 		{"1,99", "1,99"},
 		{"1.001,37", "1.001,37"},
 		{"77.000.222,80", "77.000.222,80"},
@@ -195,6 +196,7 @@ func TestToTextDescription_StringRaw(t *testing.T) {
 	}{
 		{"2", "dois centavos"},
 		{"30", "trinta centavos"},
+		{"1001,50", "um mil e um reais e cinquenta centavos"},
 		{"199", "um real e noventa e nove centavos"},
 		{"100137", "um mil e um reais e trinta e sete centavos"},
 		{"7700022280", "setenta e sete milh\u00f5es duzentos e vinte e dois reais e oitenta centavos"},

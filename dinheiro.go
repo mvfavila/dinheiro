@@ -35,7 +35,7 @@ func parseInput(value any) (int64, error) {
 }
 
 // parseString parses a string into centavos.
-// Accepts raw integers ("2", "100137") or Brazilian-formatted ("0,02", "1.001,37").
+// Accepts raw integers ("2", "100137") or Brazilian-formatted ("0,02", "1001,50", "1.001,37").
 func parseString(s string) (int64, error) {
 	if strings.ContainsRune(s, ',') {
 		return parseFormattedString(s)
