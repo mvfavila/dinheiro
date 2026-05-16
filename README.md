@@ -55,7 +55,7 @@ dinheiro.ToTextDescription("77.000.222")     // error
 
 ## Supported range
 
-Any non-negative `int64` value (up to ~92 quadrilhões reais).
+Any non-negative `int64` value (up to ~92 quadrillion).
 
 ## License
 
