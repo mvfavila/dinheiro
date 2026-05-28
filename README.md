@@ -53,6 +53,21 @@ dinheiro.ToMoneyDescription("77.000.222,80")  // "setenta e sete milhões duzent
 dinheiro.ToMoneyDescription("77.000.222")     // error
 ```
 
+### `ToTextDescription(value any) (string, error)`
+
+Formats a monetary value as a written-out Brazilian Portuguese description without currency nouns.
+
+```go
+dinheiro.ToTextDescription(int64(2))         // "dois décimos"
+dinheiro.ToTextDescription("30")             // "trinta décimos"
+dinheiro.ToTextDescription("1,99")           // "um e noventa e nove décimos"
+dinheiro.ToTextDescription(int64(100137))    // "um mil e um e trinta e sete décimos"
+dinheiro.ToTextDescription("7700022280")     // "setenta e sete milhões duzentos e vinte e dois e oitenta décimos"
+dinheiro.ToTextDescription("77000222,80")    // "setenta e sete milhões duzentos e vinte e dois e oitenta décimos"
+dinheiro.ToTextDescription("77.000.222,80")  // "setenta e sete milhões duzentos e vinte e dois e oitenta décimos"
+dinheiro.ToTextDescription("77.000.222")     // error
+```
+
 ## Supported range
 
 Any non-negative `int64` value (up to ~92 quadrillion).

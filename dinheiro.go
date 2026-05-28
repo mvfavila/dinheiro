@@ -138,13 +138,36 @@ func ToText(value any) (string, error) {
 //	ToMoneyDescription(int64(100137))     → "um mil e um reais e trinta e sete centavos"
 //	ToMoneyDescription("77.000.222,80")   → "setenta e sete milhões duzentos e vinte e dois reais e oitenta centavos"
 func ToMoneyDescription(value any) (string, error) {
+	return describeValue(value, "real", "reais", "centavo", "centavos", "zero centavos")
+}
+
+// ToTextDescription formats a monetary value as a written-out Brazilian
+// Portuguese description without currency nouns.
+//
+// The input may be an int64 (raw centavos) or a string in either raw-centavos
+// format ("199") or Brazilian-formatted currency ("1,99" or "1.001,37").
+// All three representations are equivalent.
+// Negative values are rejected.
+//
+// Examples:
+//
+//	ToTextDescription(int64(2))          → "dois décimos"
+//	ToTextDescription("30")              → "trinta décimos"
+//	ToTextDescription("1,99")            → "um e noventa e nove décimos"
+//	ToTextDescription(int64(100137))     → "um mil e um e trinta e sete décimos"
+//	ToTextDescription("77.000.222,80")   → "setenta e sete milhões duzentos e vinte e dois e oitenta décimos"
+func ToTextDescription(value any) (string, error) {
+	return describeValue(value, "", "", "décimo", "décimos", "zero")
+}
+
+func describeValue(value any, majorSingular, majorPlural, minorSingular, minorPlural, zeroText string) (string, error) {
 	n, err := parseInput(value)
 	if err != nil {
 		return "", err
 	}
 
 	if n == 0 {
-		return "zero centavos", nil
+		return zeroText, nil
 	}
 
 	reais := n / 100
@@ -154,19 +177,21 @@ func ToMoneyDescription(value any) (string, error) {
 
 	if reais > 0 {
 		w := numberToWords(reais)
-		if reais == 1 {
-			parts = append(parts, w+" real")
+		if majorSingular == "" {
+			parts = append(parts, w)
+		} else if reais == 1 {
+			parts = append(parts, w+" "+majorSingular)
 		} else {
-			parts = append(parts, w+" reais")
+			parts = append(parts, w+" "+majorPlural)
 		}
 	}
 
 	if centavos > 0 {
 		w := numberToWords(centavos)
 		if centavos == 1 {
-			parts = append(parts, w+" centavo")
+			parts = append(parts, w+" "+minorSingular)
 		} else {
-			parts = append(parts, w+" centavos")
+			parts = append(parts, w+" "+minorPlural)
 		}
 	}
 

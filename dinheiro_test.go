@@ -326,3 +326,145 @@ func TestToMoneyDescription_EConnector(t *testing.T) {
 		}
 	}
 }
+
+// --- ToTextDescription ---
+
+func TestToTextDescription_Int64(t *testing.T) {
+	cases := []struct {
+		input    int64
+		expected string
+	}{
+		{0, "zero"},
+		{1, "um décimo"},
+		{2, "dois décimos"},
+		{10, "dez décimos"},
+		{99, "noventa e nove décimos"},
+		{100, "um"},
+		{101, "um e um décimo"},
+		{199, "um e noventa e nove décimos"},
+		{200, "dois"},
+		{1000, "dez"},
+		{10000, "cem"},
+		{100137, "um mil e um e trinta e sete décimos"},
+		{7700022280, "setenta e sete milhões duzentos e vinte e dois e oitenta décimos"},
+	}
+
+	for _, tc := range cases {
+		got, err := dinheiro.ToTextDescription(tc.input)
+		if err != nil {
+			t.Errorf("ToTextDescription(%d): unexpected error: %v", tc.input, err)
+			continue
+		}
+		if got != tc.expected {
+			t.Errorf("ToTextDescription(%d) = %q; want %q", tc.input, got, tc.expected)
+		}
+	}
+}
+
+func TestToTextDescription_StringRaw(t *testing.T) {
+	cases := []struct {
+		input    string
+		expected string
+	}{
+		{"2", "dois décimos"},
+		{"10", "dez décimos"},
+		{"1001,50", "um mil e um e cinquenta décimos"},
+		{"199", "um e noventa e nove décimos"},
+		{"100137", "um mil e um e trinta e sete décimos"},
+		{"7700022280", "setenta e sete milhões duzentos e vinte e dois e oitenta décimos"},
+	}
+
+	for _, tc := range cases {
+		got, err := dinheiro.ToTextDescription(tc.input)
+		if err != nil {
+			t.Errorf("ToTextDescription(%q): unexpected error: %v", tc.input, err)
+			continue
+		}
+		if got != tc.expected {
+			t.Errorf("ToTextDescription(%q) = %q; want %q", tc.input, got, tc.expected)
+		}
+	}
+}
+
+func TestToTextDescription_StringFormatted(t *testing.T) {
+	cases := []struct {
+		input    string
+		expected string
+	}{
+		{"0,02", "dois décimos"},
+		{"0,30", "trinta décimos"},
+		{"1,99", "um e noventa e nove décimos"},
+		{"1.001,37", "um mil e um e trinta e sete décimos"},
+		{"77.000.222,80", "setenta e sete milhões duzentos e vinte e dois e oitenta décimos"},
+	}
+
+	for _, tc := range cases {
+		got, err := dinheiro.ToTextDescription(tc.input)
+		if err != nil {
+			t.Errorf("ToTextDescription(%q): unexpected error: %v", tc.input, err)
+			continue
+		}
+		if got != tc.expected {
+			t.Errorf("ToTextDescription(%q) = %q; want %q", tc.input, got, tc.expected)
+		}
+	}
+}
+
+func TestToTextDescription_Equivalence(t *testing.T) {
+	cases := []struct {
+		int64Input   int64
+		rawStr       string
+		formattedStr string
+		expected     string
+	}{
+		{2, "2", "0,02", "dois décimos"},
+		{30, "30", "0,30", "trinta décimos"},
+		{199, "199", "1,99", "um e noventa e nove décimos"},
+		{100137, "100137", "1.001,37", "um mil e um e trinta e sete décimos"},
+		{7700022280, "7700022280", "77.000.222,80", "setenta e sete milhões duzentos e vinte e dois e oitenta décimos"},
+	}
+
+	for _, tc := range cases {
+		r1, err := dinheiro.ToTextDescription(tc.int64Input)
+		if err != nil {
+			t.Errorf("ToTextDescription(int64(%d)): unexpected error: %v", tc.int64Input, err)
+			continue
+		}
+		r2, err := dinheiro.ToTextDescription(tc.rawStr)
+		if err != nil {
+			t.Errorf("ToTextDescription(%q): unexpected error: %v", tc.rawStr, err)
+			continue
+		}
+		r3, err := dinheiro.ToTextDescription(tc.formattedStr)
+		if err != nil {
+			t.Errorf("ToTextDescription(%q): unexpected error: %v", tc.formattedStr, err)
+			continue
+		}
+		if r1 != tc.expected || r2 != tc.expected || r3 != tc.expected {
+			t.Errorf("equivalence failed for value %d: int64=%q raw=%q formatted=%q want %q",
+				tc.int64Input, r1, r2, r3, tc.expected)
+		}
+	}
+}
+
+func TestToTextDescription_Errors(t *testing.T) {
+	_, err := dinheiro.ToTextDescription(int64(-1))
+	if err == nil {
+		t.Error("ToTextDescription(int64(-1)): expected error for negative value")
+	}
+
+	_, err = dinheiro.ToTextDescription("-100")
+	if err == nil {
+		t.Error(`ToTextDescription("-100"): expected error for negative string`)
+	}
+
+	_, err = dinheiro.ToTextDescription("xyz")
+	if err == nil {
+		t.Error(`ToTextDescription("xyz"): expected error for non-numeric string`)
+	}
+
+	_, err = dinheiro.ToTextDescription(3.14)
+	if err == nil {
+		t.Error("ToTextDescription(3.14): expected error for unsupported type float64")
+	}
+}
