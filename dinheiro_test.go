@@ -110,14 +110,17 @@ func TestToText_Equivalence(t *testing.T) {
 		r1, err := dinheiro.ToText(tc.int64Input)
 		if err != nil {
 			t.Errorf("ToText(int64(%d)): unexpected error: %v", tc.int64Input, err)
+			continue
 		}
 		r2, err := dinheiro.ToText(tc.rawStr)
 		if err != nil {
 			t.Errorf("ToText(%q): unexpected error: %v", tc.rawStr, err)
+			continue
 		}
 		r3, err := dinheiro.ToText(tc.formattedStr)
 		if err != nil {
 			t.Errorf("ToText(%q): unexpected error: %v", tc.formattedStr, err)
+			continue
 		}
 		if r1 != tc.expected || r2 != tc.expected || r3 != tc.expected {
 			t.Errorf("equivalence failed for value %d: int64=%q raw=%q formatted=%q want %q",
@@ -153,9 +156,9 @@ func TestToText_Errors(t *testing.T) {
 	}
 }
 
-// --- ToTextDescription ---
+// --- ToMoneyDescription ---
 
-func TestToTextDescription_Int64(t *testing.T) {
+func TestToMoneyDescription_Int64(t *testing.T) {
 	cases := []struct {
 		input    int64
 		expected string
@@ -172,24 +175,24 @@ func TestToTextDescription_Int64(t *testing.T) {
 		{1000, "dez reais"},
 		{10000, "cem reais"},
 		{100137, "um mil e um reais e trinta e sete centavos"},
-		{7700022280, "setenta e sete milh\u00f5es duzentos e vinte e dois reais e oitenta centavos"},
+		{7700022280, "setenta e sete milhões duzentos e vinte e dois reais e oitenta centavos"},
 		{500, "cinco reais"},
 		{math.MaxInt64, "noventa e dois quatrilhões duzentos e trinta e três trilhões setecentos e vinte bilhões trezentos e sessenta e oito milhões quinhentos e quarenta e sete mil setecentos e cinquenta e oito reais e sete centavos"},
 	}
 
 	for _, tc := range cases {
-		got, err := dinheiro.ToTextDescription(tc.input)
+		got, err := dinheiro.ToMoneyDescription(tc.input)
 		if err != nil {
-			t.Errorf("ToTextDescription(%d): unexpected error: %v", tc.input, err)
+			t.Errorf("ToMoneyDescription(%d): unexpected error: %v", tc.input, err)
 			continue
 		}
 		if got != tc.expected {
-			t.Errorf("ToTextDescription(%d) = %q; want %q", tc.input, got, tc.expected)
+			t.Errorf("ToMoneyDescription(%d) = %q; want %q", tc.input, got, tc.expected)
 		}
 	}
 }
 
-func TestToTextDescription_StringRaw(t *testing.T) {
+func TestToMoneyDescription_StringRaw(t *testing.T) {
 	cases := []struct {
 		input    string
 		expected string
@@ -199,22 +202,22 @@ func TestToTextDescription_StringRaw(t *testing.T) {
 		{"1001,50", "um mil e um reais e cinquenta centavos"},
 		{"199", "um real e noventa e nove centavos"},
 		{"100137", "um mil e um reais e trinta e sete centavos"},
-		{"7700022280", "setenta e sete milh\u00f5es duzentos e vinte e dois reais e oitenta centavos"},
+		{"7700022280", "setenta e sete milhões duzentos e vinte e dois reais e oitenta centavos"},
 	}
 
 	for _, tc := range cases {
-		got, err := dinheiro.ToTextDescription(tc.input)
+		got, err := dinheiro.ToMoneyDescription(tc.input)
 		if err != nil {
-			t.Errorf("ToTextDescription(%q): unexpected error: %v", tc.input, err)
+			t.Errorf("ToMoneyDescription(%q): unexpected error: %v", tc.input, err)
 			continue
 		}
 		if got != tc.expected {
-			t.Errorf("ToTextDescription(%q) = %q; want %q", tc.input, got, tc.expected)
+			t.Errorf("ToMoneyDescription(%q) = %q; want %q", tc.input, got, tc.expected)
 		}
 	}
 }
 
-func TestToTextDescription_StringFormatted(t *testing.T) {
+func TestToMoneyDescription_StringFormatted(t *testing.T) {
 	cases := []struct {
 		input    string
 		expected string
@@ -223,22 +226,22 @@ func TestToTextDescription_StringFormatted(t *testing.T) {
 		{"0,30", "trinta centavos"},
 		{"1,99", "um real e noventa e nove centavos"},
 		{"1.001,37", "um mil e um reais e trinta e sete centavos"},
-		{"77.000.222,80", "setenta e sete milh\u00f5es duzentos e vinte e dois reais e oitenta centavos"},
+		{"77.000.222,80", "setenta e sete milhões duzentos e vinte e dois reais e oitenta centavos"},
 	}
 
 	for _, tc := range cases {
-		got, err := dinheiro.ToTextDescription(tc.input)
+		got, err := dinheiro.ToMoneyDescription(tc.input)
 		if err != nil {
-			t.Errorf("ToTextDescription(%q): unexpected error: %v", tc.input, err)
+			t.Errorf("ToMoneyDescription(%q): unexpected error: %v", tc.input, err)
 			continue
 		}
 		if got != tc.expected {
-			t.Errorf("ToTextDescription(%q) = %q; want %q", tc.input, got, tc.expected)
+			t.Errorf("ToMoneyDescription(%q) = %q; want %q", tc.input, got, tc.expected)
 		}
 	}
 }
 
-func TestToTextDescription_Equivalence(t *testing.T) {
+func TestToMoneyDescription_Equivalence(t *testing.T) {
 	cases := []struct {
 		int64Input   int64
 		rawStr       string
@@ -249,21 +252,24 @@ func TestToTextDescription_Equivalence(t *testing.T) {
 		{30, "30", "0,30", "trinta centavos"},
 		{199, "199", "1,99", "um real e noventa e nove centavos"},
 		{100137, "100137", "1.001,37", "um mil e um reais e trinta e sete centavos"},
-		{7700022280, "7700022280", "77.000.222,80", "setenta e sete milh\u00f5es duzentos e vinte e dois reais e oitenta centavos"},
+		{7700022280, "7700022280", "77.000.222,80", "setenta e sete milhões duzentos e vinte e dois reais e oitenta centavos"},
 	}
 
 	for _, tc := range cases {
-		r1, err := dinheiro.ToTextDescription(tc.int64Input)
+		r1, err := dinheiro.ToMoneyDescription(tc.int64Input)
 		if err != nil {
-			t.Errorf("ToTextDescription(int64(%d)): unexpected error: %v", tc.int64Input, err)
+			t.Errorf("ToMoneyDescription(int64(%d)): unexpected error: %v", tc.int64Input, err)
+			continue
 		}
-		r2, err := dinheiro.ToTextDescription(tc.rawStr)
+		r2, err := dinheiro.ToMoneyDescription(tc.rawStr)
 		if err != nil {
-			t.Errorf("ToTextDescription(%q): unexpected error: %v", tc.rawStr, err)
+			t.Errorf("ToMoneyDescription(%q): unexpected error: %v", tc.rawStr, err)
+			continue
 		}
-		r3, err := dinheiro.ToTextDescription(tc.formattedStr)
+		r3, err := dinheiro.ToMoneyDescription(tc.formattedStr)
 		if err != nil {
-			t.Errorf("ToTextDescription(%q): unexpected error: %v", tc.formattedStr, err)
+			t.Errorf("ToMoneyDescription(%q): unexpected error: %v", tc.formattedStr, err)
+			continue
 		}
 		if r1 != tc.expected || r2 != tc.expected || r3 != tc.expected {
 			t.Errorf("equivalence failed for value %d: int64=%q raw=%q formatted=%q want %q",
@@ -272,31 +278,31 @@ func TestToTextDescription_Equivalence(t *testing.T) {
 	}
 }
 
-func TestToTextDescription_Errors(t *testing.T) {
-	_, err := dinheiro.ToTextDescription(int64(-1))
+func TestToMoneyDescription_Errors(t *testing.T) {
+	_, err := dinheiro.ToMoneyDescription(int64(-1))
 	if err == nil {
-		t.Error("ToTextDescription(int64(-1)): expected error for negative value")
+		t.Error("ToMoneyDescription(int64(-1)): expected error for negative value")
 	}
 
-	_, err = dinheiro.ToTextDescription("-100")
+	_, err = dinheiro.ToMoneyDescription("-100")
 	if err == nil {
-		t.Error(`ToTextDescription("-100"): expected error for negative string`)
+		t.Error(`ToMoneyDescription("-100"): expected error for negative string`)
 	}
 
-	_, err = dinheiro.ToTextDescription("xyz")
+	_, err = dinheiro.ToMoneyDescription("xyz")
 	if err == nil {
-		t.Error(`ToTextDescription("xyz"): expected error for non-numeric string`)
+		t.Error(`ToMoneyDescription("xyz"): expected error for non-numeric string`)
 	}
 
-	_, err = dinheiro.ToTextDescription(3.14)
+	_, err = dinheiro.ToMoneyDescription(3.14)
 	if err == nil {
-		t.Error("ToTextDescription(3.14): expected error for unsupported type float64")
+		t.Error("ToMoneyDescription(3.14): expected error for unsupported type float64")
 	}
 }
 
 // --- "e" connector rule tests ---
 
-func TestToTextDescription_EConnector(t *testing.T) {
+func TestToMoneyDescription_EConnector(t *testing.T) {
 	cases := []struct {
 		input    int64
 		expected string
@@ -310,13 +316,13 @@ func TestToTextDescription_EConnector(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		got, err := dinheiro.ToTextDescription(tc.input)
+		got, err := dinheiro.ToMoneyDescription(tc.input)
 		if err != nil {
-			t.Errorf("ToTextDescription(%d): unexpected error: %v", tc.input, err)
+			t.Errorf("ToMoneyDescription(%d): unexpected error: %v", tc.input, err)
 			continue
 		}
 		if got != tc.expected {
-			t.Errorf("ToTextDescription(%d) = %q; want %q", tc.input, got, tc.expected)
+			t.Errorf("ToMoneyDescription(%d) = %q; want %q", tc.input, got, tc.expected)
 		}
 	}
 }

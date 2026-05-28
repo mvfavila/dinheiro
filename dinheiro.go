@@ -122,7 +122,7 @@ func ToText(value any) (string, error) {
 	return fmt.Sprintf("%s,%02d", formatWithDots(reais), centavos), nil
 }
 
-// ToTextDescription formats a monetary value as a written-out Brazilian
+// ToMoneyDescription formats a monetary value as a written-out Brazilian
 // Portuguese description.
 //
 // The input may be an int64 (raw centavos) or a string in either raw-centavos
@@ -132,12 +132,12 @@ func ToText(value any) (string, error) {
 //
 // Examples:
 //
-//	ToTextDescription(int64(2))          → "dois centavos"
-//	ToTextDescription("30")              → "trinta centavos"
-//	ToTextDescription("1,99")            → "um real e noventa e nove centavos"
-//	ToTextDescription(int64(100137))     → "um mil e um reais e trinta e sete centavos"
-//	ToTextDescription("77.000.222,80")   → "setenta e sete milhões duzentos e vinte e dois reais e oitenta centavos"
-func ToTextDescription(value any) (string, error) {
+//	ToMoneyDescription(int64(2))          → "dois centavos"
+//	ToMoneyDescription("30")              → "trinta centavos"
+//	ToMoneyDescription("1,99")            → "um real e noventa e nove centavos"
+//	ToMoneyDescription(int64(100137))     → "um mil e um reais e trinta e sete centavos"
+//	ToMoneyDescription("77.000.222,80")   → "setenta e sete milhões duzentos e vinte e dois reais e oitenta centavos"
+func ToMoneyDescription(value any) (string, error) {
 	n, err := parseInput(value)
 	if err != nil {
 		return "", err

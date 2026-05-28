@@ -38,19 +38,19 @@ dinheiro.ToText("77.000.222,80")   // "77.000.222,80"
 dinheiro.ToText("77.000.222")      // error
 ```
 
-### `ToTextDescription(value any) (string, error)`
+### `ToMoneyDescription(value any) (string, error)`
 
 Formats a monetary value as a written-out Brazilian Portuguese description.
 
 ```go
-dinheiro.ToTextDescription(int64(2))         // "dois centavos"
-dinheiro.ToTextDescription("30")             // "trinta centavos"
-dinheiro.ToTextDescription("1,99")           // "um real e noventa e nove centavos"
-dinheiro.ToTextDescription(int64(100137))    // "um mil e um reais e trinta e sete centavos"
-dinheiro.ToTextDescription("7700022280")     // "setenta e sete milhões duzentos e vinte e dois reais e oitenta centavos"
-dinheiro.ToTextDescription("77000222,80")    // "setenta e sete milhões duzentos e vinte e dois reais e oitenta centavos"
-dinheiro.ToTextDescription("77.000.222,80")  // "setenta e sete milhões duzentos e vinte e dois reais e oitenta centavos"
-dinheiro.ToTextDescription("77.000.222")     // error
+dinheiro.ToMoneyDescription(int64(2))         // "dois centavos"
+dinheiro.ToMoneyDescription("30")             // "trinta centavos"
+dinheiro.ToMoneyDescription("1,99")           // "um real e noventa e nove centavos"
+dinheiro.ToMoneyDescription(int64(100137))    // "um mil e um reais e trinta e sete centavos"
+dinheiro.ToMoneyDescription("7700022280")     // "setenta e sete milhões duzentos e vinte e dois reais e oitenta centavos"
+dinheiro.ToMoneyDescription("77000222,80")    // "setenta e sete milhões duzentos e vinte e dois reais e oitenta centavos"
+dinheiro.ToMoneyDescription("77.000.222,80")  // "setenta e sete milhões duzentos e vinte e dois reais e oitenta centavos"
+dinheiro.ToMoneyDescription("77.000.222")     // error
 ```
 
 ## Supported range
